@@ -1,11 +1,12 @@
 import { useState, useMemo } from "react"
-
+import { useGasto } from "../hooks/useGasto"
 
 
 export default function FormularioComp() {
   // State
 
   const [gasto, setGasto] = useState(0)
+  const { dispatch } = useGasto()
 
   // Handlers
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,11 +21,7 @@ export default function FormularioComp() {
   // Submit
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (isValido) {
-      console.log("Gasto inválido")
-      return
-    }
-    console.log("Gasto válido")
+    dispatch({type: "AGREGAR_GASTO", payload: { gasto: gasto }})
   }
 
   return (

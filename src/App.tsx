@@ -1,8 +1,7 @@
 import FormularioComp from "./components/FormularioComp"
 
-function App() {
-  
 
+function App() {
   return (
     <>
       <header className="bg-blue-700 py-8 max-h-72">
