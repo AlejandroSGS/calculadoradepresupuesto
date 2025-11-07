@@ -2,6 +2,7 @@ import FormularioComp from "./components/FormularioComp"
 import GastoNext from "./components/GastoNext"
 import { useGasto } from "./hooks/useGasto"
 import { useMemo } from "react"
+import ExpenseModal from "./components/ExpenseModal"
 
 function App() {
 
@@ -23,6 +24,13 @@ function App() {
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg mt-10 p-10">
         {!isValidoGasto ? <GastoNext /> : <FormularioComp />}
       </div>
+      
+      {!isValidoGasto && (
+        <ExpenseModal />
+      )}
+      
+
+
     </>
   )
 }
