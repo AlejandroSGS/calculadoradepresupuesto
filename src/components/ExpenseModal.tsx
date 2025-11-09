@@ -2,6 +2,7 @@ import { Fragment } from 'react'
 import { PlusCircleIcon } from '@heroicons/react/24/solid'
 import { Dialog, Transition } from '@headlessui/react'
 import { useGasto } from '../hooks/useGasto'
+import ExpenseForm from './ExpenseForm'
 
 export default function ExpenseModal() {
   const { state, dispatch } = useGasto()
@@ -43,9 +44,7 @@ export default function ExpenseModal() {
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel className="w-full max-w-3xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-    
-
-    
+                  <ExpenseForm/>
                 </Dialog.Panel>
               </Transition.Child>
             </div>
