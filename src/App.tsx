@@ -4,11 +4,16 @@ import { useGasto } from "./hooks/useGasto"
 import { useMemo } from "react"
 import ExpenseModal from "./components/ExpenseModal"
 
+/**
+ * Componente principal de la aplicación
+ * Gestiona el presupuesto y muestra el formulario o la vista de gastos según el estado
+ */
 function App() {
 
   const { state } = useGasto()
   console.log(state.gasto)
 
+  // Valida si hay un presupuesto válido (mayor a 0)
   const isValidoGasto = useMemo(() => state.gasto <= 0, [state.gasto])
 
 

@@ -1,5 +1,8 @@
 import { formatCurrency } from "../helpers";
 
+/**
+ * Componente para mostrar cantidades formateadas como moneda
+ */
 type AmountDisplayPropost = {
     label:string
     amount:number

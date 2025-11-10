@@ -4,6 +4,10 @@ import { Dialog, Transition } from '@headlessui/react'
 import { useGasto } from '../hooks/useGasto'
 import ExpenseForm from './ExpenseForm'
 
+/**
+ * Modal para agregar nuevos gastos
+ * Muestra un botón flotante y un modal con el formulario de gastos
+ */
 export default function ExpenseModal() {
   const { state, dispatch } = useGasto()
 

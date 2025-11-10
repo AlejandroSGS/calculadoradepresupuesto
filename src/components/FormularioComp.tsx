@@ -1,24 +1,25 @@
 import { useState, useMemo } from "react"
 import { useGasto } from "../hooks/useGasto"
 
-
+/**
+ * Formulario para establecer el presupuesto inicial
+ * Se muestra cuando no hay un presupuesto válido configurado
+ */
 export default function FormularioComp() {
-  // State
-
   const [gasto, setGasto] = useState(0)
   const { dispatch } = useGasto()
 
-  // Handlers
+  // Maneja cambios en el input de presupuesto
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setGasto(Number(e.target.valueAsNumber))
   }
 
-  // Validations
+  // Valida que el presupuesto sea mayor a 0
   const isValido = useMemo(() => {
     return gasto <= 0 || isNaN(gasto)
   }, [gasto])
 
-  // Submit
+  // Envía el presupuesto al estado global
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     dispatch({type: "AGREGAR_GASTO", payload: { gasto: gasto }})

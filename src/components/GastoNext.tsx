@@ -1,5 +1,9 @@
 import AmountDisplay from "./AmountDisplay";
 
+/**
+ * Vista principal cuando hay un presupuesto configurado
+ * Muestra el gráfico, resumen de gastos y botón para resetear
+ */
 export default function GastoNext() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
