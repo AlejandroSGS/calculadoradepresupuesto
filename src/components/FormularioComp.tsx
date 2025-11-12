@@ -22,7 +22,7 @@ export default function FormularioComp() {
   // Envía el presupuesto al estado global
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    dispatch({type: "AGREGAR_GASTO", payload: { gasto: gasto }})
+    dispatch({ type: "SET_BUDGET", payload: { amount: gasto } })
   }
 
   return (

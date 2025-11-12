@@ -4,6 +4,9 @@ import { categories } from "../data/categories";
 import DatePicker from 'react-date-picker';
 import 'react-calendar/dist/Calendar.css'
 import 'react-date-picker/dist/DatePicker.css'
+import ErrorMessage from "./ErrorMessage";
+import { useGasto } from "../hooks/useGasto";
+import { formatCurrency } from "../helpers";
 
 type ValuePiece = Date | null;
 
@@ -14,24 +17,34 @@ type Value = ValuePiece | [ValuePiece, ValuePiece];
  * Permite ingresar nombre, cantidad, categoría y fecha del gasto
  */
 export default function ExpenseForm() {
-    // Fix: include the 'date' property as required by DraftExpense (default to current date)
-    const [expense, setExpense] = useState<DraftExpense>({
+    // Valores iniciales del formulario
+    const initialExpense: DraftExpense = {
         amount: 0,
         expenseName: '',
         categories: '',
         date: new Date()
-    });
+    };
 
-    const [error, setError] = useState('')
+    const [expense, setExpense] = useState<DraftExpense>(initialExpense);
+    const [error, setError] = useState('');
+    const { state, dispatch } = useGasto();
+
+    // Función para reiniciar el formulario
+    const resetForm = () => {
+        setExpense(initialExpense);
+        setError('');
+    };
 
     // Maneja cambios en los campos del formulario
-    const handleChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement> ) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
         const { name, value } = e.target
         const isAmountField = ['amount'].includes(name)
         setExpense({
             ...expense,
             [name] : isAmountField ? +value : value
         })
+        // Limpiar el error cuando el usuario empiece a escribir
+        if(error) setError('')
     }
 
     // Maneja cambios en la fecha seleccionada
@@ -40,18 +53,53 @@ export default function ExpenseForm() {
             ...expense,
             date: value
         })
+        // Limpiar el error cuando el usuario cambie la fecha
+        if(error) setError('')
     }
 
     // Valida y procesa el envío del formulario
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        if(Object.values(expense).includes('')){
-            setError('Todos los campos son obligatorios')
+        // Validar cada campo individualmente
+        if(!expense.expenseName.trim()){
+            setError('El nombre del gasto es obligatorio')
             return
         }
 
-        console.log("Todo bien")
+        if(expense.amount <= 0 || isNaN(expense.amount)){
+            setError('La cantidad debe ser mayor a 0')
+            return
+        }
+
+        if(!expense.categories){
+            setError('Debes seleccionar una categoría')
+            return
+        }
+
+        if(!expense.date || (expense.date instanceof Date && isNaN(expense.date.getTime()))){
+            setError('Debes seleccionar una fecha válida')
+            return
+        }
+
+        // Validar que no se exceda el presupuesto
+        const totalGastado = state.expense.reduce((total, exp) => total + exp.amount, 0);
+        const nuevoTotal = totalGastado + expense.amount;
+        
+        if (nuevoTotal > state.gasto) {
+            const disponible = state.gasto - totalGastado;
+            setError(`No puedes exceder el presupuesto. Disponible: ${formatCurrency(disponible)}`)
+            return
+        }
+
+        // Si todo está bien, limpiar el error y procesar
+        dispatch({type: 'add-expense', payload: {expense}})
+
+        // Reiniciar el formulario después de agregar el gasto
+        resetForm();
+        
+        // Cerrar el modal automáticamente
+        dispatch({type: 'close-modal'});
     }
 
     return (
@@ -59,6 +107,8 @@ export default function ExpenseForm() {
             <legend className=" uppercase text-center text-2xl font-black border-b-4 border-blue-400 py-2">
                 Nuevo gasto
         </legend>
+
+        {error && <ErrorMessage>{error}</ErrorMessage>}
 
         <div className="flex flex-col gap-2">
             <label htmlFor="expenseName" className=" text-xl">Nuevo Gasto:</label>
@@ -93,7 +143,11 @@ export default function ExpenseForm() {
             className=" bg-slate-100 p-2 border-0" value={expense.date} onChange={handleChangeDate}/>
         </div>
 
-        <input type="submit" className=" bg-blue-600 cursor-pointer w-full p-2 text-white uppercase font-bold rounded-lg" value={'Registrar ahorro'}/>
+        <input 
+            type="submit" 
+            className=" bg-blue-600 cursor-pointer w-full p-2 text-white uppercase font-bold rounded-lg hover:bg-blue-700 transition-colors" 
+            value={'Registrar gasto'}
+        />
 
     </form>
   )

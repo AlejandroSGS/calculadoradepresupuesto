@@ -3,6 +3,7 @@ import GastoNext from "./components/GastoNext"
 import { useGasto } from "./hooks/useGasto"
 import { useMemo } from "react"
 import ExpenseModal from "./components/ExpenseModal"
+import ExpenseList from "./components/ExpenseList"
 
 /**
  * Componente principal de la aplicación
@@ -31,7 +32,12 @@ function App() {
       </div>
       
       {!isValidoGasto && (
-        <ExpenseModal />
+        <>
+          <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg mt-10 p-10">
+            <ExpenseList />
+          </div>
+          <ExpenseModal />
+        </>
       )}
       
 
