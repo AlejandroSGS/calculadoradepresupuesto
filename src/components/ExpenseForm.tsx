@@ -39,12 +39,29 @@ export default function ExpenseForm() {
     const handleChange = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
         const { name, value } = e.target
         const isAmountField = ['amount'].includes(name)
-        setExpense({
-            ...expense,
-            [name] : isAmountField ? +value : value
-        })
+        
+        if (isAmountField) {
+            // Si el campo está vacío, guardar como 0 pero mostrar vacío
+            const numValue = value === '' ? 0 : +value
+            setExpense({
+                ...expense,
+                [name]: numValue
+            })
+        } else {
+            setExpense({
+                ...expense,
+                [name]: value
+            })
+        }
         // Limpiar el error cuando el usuario empiece a escribir
         if(error) setError('')
+    }
+
+    // Maneja el foco en el campo de cantidad para limpiar el 0
+    const handleAmountFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+        if (expense.amount === 0) {
+            e.target.select()
+        }
     }
 
     // Maneja cambios en la fecha seleccionada
@@ -118,8 +135,18 @@ export default function ExpenseForm() {
 
         <div className="flex flex-col gap-2">
             <label htmlFor="amount" className=" text-xl">Cantidad:</label>
-            <input type="number" id="expenseName" placeholder="Agrega la cantidad del gasto" className=" bg-slate-100" name="amount" 
-            value={expense.amount} onChange={handleChange}/>
+            <input 
+                type="number" 
+                id="amount" 
+                placeholder="Agrega la cantidad del gasto" 
+                className=" bg-slate-100" 
+                name="amount" 
+                value={expense.amount === 0 ? '' : expense.amount} 
+                onChange={handleChange}
+                onFocus={handleAmountFocus}
+                min="0"
+                step="0.01"
+            />
         </div>
 
 

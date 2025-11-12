@@ -11,7 +11,17 @@ export default function FormularioComp() {
 
   // Maneja cambios en el input de presupuesto
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setGasto(Number(e.target.valueAsNumber))
+    const value = e.target.value
+    // Si el campo está vacío, guardar como 0 pero mostrar vacío
+    const numValue = value === '' ? 0 : Number(value)
+    setGasto(numValue)
+  }
+
+  // Maneja el foco en el campo de presupuesto para limpiar el 0
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    if (gasto === 0) {
+      e.target.select()
+    }
   }
 
   // Valida que el presupuesto sea mayor a 0
@@ -34,11 +44,14 @@ export default function FormularioComp() {
         <input 
           type="number" 
           id="gasto" 
-          placeholder="Añade el gasto" 
+          placeholder="Añade el presupuesto" 
           className="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
           name="gasto"
-          value={gasto}
+          value={gasto === 0 ? '' : gasto}
           onChange={handleChange}
+          onFocus={handleFocus}
+          min="0"
+          step="0.01"
           required
         />
         {isValido && <p className="text-red-500 text-sm">El gasto debe ser mayor a 0</p>}
